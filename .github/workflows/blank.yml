@@ -14,6 +14,8 @@ jobs:
 
     - name: Set variables
       run: |
+        echo "TAG_NAME=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+        echo "RELEASE_NAME=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
         echo "CHINA_DOMAINS_URL=https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf" >> $GITHUB_ENV
         echo "GOOGLE_DOMAINS_URL=https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/google.china.conf" >> $GITHUB_ENV
         echo "APPLE_DOMAINS_URL=https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/apple.china.conf" >> $GITHUB_ENV
@@ -30,16 +32,6 @@ jobs:
         mkdir -p publish
         mv ./temp-direct.txt ./publish/
 
-    - name: Release and upload assets
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        release_name: ${{ env.RELEASE_NAME }}
-        tag: ${{ env.TAG_NAME }}
-        file_glob: true
-        file: ./publish/*
-      env:
-        TAG_NAME: "v1.0.0" 
 
     - name: Git push assets to "release" branch
       run: |
@@ -48,7 +40,17 @@ jobs:
         git config --local user.name "github-actions[bot]"
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git checkout -b release
-        git add .
+        git add -A
         git commit -m "${{ env.RELEASE_NAME }}"
         git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-        git push -f -u origin release 
+        git push -f -u origin release
+
+
+    - name: Upload files to GitHub release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file_glob: true
+        file: ./publish/*
+        tag: ${{ env.TAG_NAME }}
+
