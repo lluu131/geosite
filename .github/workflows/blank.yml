@@ -6,8 +6,7 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - "**/README.md"
+
 jobs:
   build:
     runs-on: ubuntu-latest
