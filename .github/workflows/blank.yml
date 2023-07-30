@@ -32,6 +32,13 @@ jobs:
         mkdir -p publish
         mv ./temp-direct.txt ./publish/
 
+    - name: Delete previous release
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git fetch --prune
+        git push origin --delete release
+      continue-on-error: true
 
     - name: Git push assets to "release" branch
       run: |
@@ -45,7 +52,6 @@ jobs:
         git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
         git push -f -u origin release
 
-
     - name: Upload files to GitHub release
       uses: svenstaro/upload-release-action@v2
       with:
@@ -53,4 +59,3 @@ jobs:
         file_glob: true
         file: ./publish/*
         tag: ${{ env.TAG_NAME }}
-
