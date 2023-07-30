@@ -32,7 +32,7 @@ jobs:
     - name: Move files to publish directory
       run: |
         mkdir -p publish
-        mv ./cn-domains.txt ./accelerated-domains.txt ./publish/
+        mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./publish/
 
 
     - name: Git push assets to "release" branch
