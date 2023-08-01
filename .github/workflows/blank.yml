@@ -31,13 +31,12 @@ jobs:
           mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./publish/
 
       - name: Delete previous release
-        uses: softprops/action-gh-release@v1
+        uses: andstor/delete-previous-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
           repo: ${{ github.repository }}
           tag: release
-          delete_previous: true
 
       - name: Git push assets to "release" branch
         run: |
@@ -57,4 +56,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file_glob: true
           file: ./publish/*
-          tag: release
+          delete_previous: true
+          tag_name: release
