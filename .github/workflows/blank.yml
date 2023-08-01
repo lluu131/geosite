@@ -30,31 +30,9 @@ jobs:
           mkdir -p publish
           mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./publish/
 
-      - name: Delete previous release
-        uses: marvinpinto/action-automatic-releases@latest
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          delete_previous: true
-          prerelease: false
-          tag: release
-
-      - name: Git push assets to "release" branch
-        run: |
-          cd publish || exit 1
-          git init
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b release
-          git add .
-          git commit -m "Update domain lists"
-          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -u origin release
-
-      - name: Upload files to GitHub release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file_glob: true
-          file: ./publish/*
-          delete_previous: true
-          tag: release
+          files: ./publish/*
+          tag_name: release
+          token: ${{ secrets.GITHUB_TOKEN }}
