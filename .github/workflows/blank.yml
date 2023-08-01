@@ -31,11 +31,11 @@ jobs:
           mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./publish/
 
       - name: Delete previous release
-        uses: andstor/delete-previous-release@v1
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.repository }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          delete_previous: true
+          prerelease: false
           tag: release
 
       - name: Git push assets to "release" branch
@@ -57,4 +57,4 @@ jobs:
           file_glob: true
           file: ./publish/*
           delete_previous: true
-          tag_name: release
+          tag: release
