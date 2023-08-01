@@ -31,11 +31,13 @@ jobs:
           mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./publish/
 
       - name: Delete previous release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          delete_previous: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.repository }}
           tag: release
+          delete_previous: true
 
       - name: Git push assets to "release" branch
         run: |
