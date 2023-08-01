@@ -2,8 +2,8 @@ name: Build and Publish Domain Lists
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Run every day at midnight
-  workflow_dispatch: # Manually trigger workflow
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
