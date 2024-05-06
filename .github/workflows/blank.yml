@@ -30,9 +30,22 @@ jobs:
           mkdir -p publish
           mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./publish/
 
-      - name: Create or update GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Git push assets to "release" branch
+        run: |
+          cd publish || exit 1
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b release
+          git add -A
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add geoip "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u geoip release
+
+      - name: Upload files to GitHub release
+        uses: svenstaro/upload-release-action@v2
         with:
-          files: ./publish/*
-          tag_name: release
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file_glob: true
+          file: ./publish/*
+          tag: ${{ env.TAG_NAME }}
