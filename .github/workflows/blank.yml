@@ -43,7 +43,7 @@ jobs:
 
       - name: Create merged domains.txt
         run: |
-          cat ./accelerated-domains.china.txt ./apple.china.txt | sort -u > ./domains.txt
+          cat ./accelerated-domains.china.txt ./apple.china.txt > ./domains.txt
 
       - name: Move files to publish directory
         run: |
