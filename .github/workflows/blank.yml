@@ -31,24 +31,20 @@ jobs:
           echo "CHINA_DOMAINS_URL=https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf" >> $GITHUB_ENV
           echo "GOOGLE_DOMAINS_URL=https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/google.china.conf" >> $GITHUB_ENV
           echo "APPLE_DOMAINS_URL=https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/apple.china.conf" >> $GITHUB_ENV
-          echo "CUSTOM_DIRECT=https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/cn.txt" >> $GITHUB_ENV
+          echo "CN_DIRECT_URL=https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt" >> $GITHUB_ENV
         shell: bash
 
       - name: Get and add domains into file
         run: |
           curl -sSL $CHINA_DOMAINS_URL | perl -ne '/^server=\/([^\/]+)\// && print "$1\n"' > ./accelerated-domains.china.txt
-          curl -sSL ${CUSTOM_DIRECT} | perl -ne '/^(domain):([^:]+)(\n$|:@.+)/ && print "$2\n"' >> ./accelerated-domains.china.txt
+          curl -sSL $CN_DIRECT_URL | perl -pe 's/^full://' > ./cn-direct.txt
           curl -sSL $APPLE_DOMAINS_URL | perl -ne '/^server=\/([^\/]+)\// && print "$1\n"' > ./apple.china.txt
           curl -sSL $GOOGLE_DOMAINS_URL | perl -ne '/^server=\/([^\/]+)\// && print "$1\n"' > ./google.china.txt
-
-      - name: Create merged domains.txt
-        run: |
-          cat ./accelerated-domains.china.txt ./apple.china.txt > ./domains.txt
 
       - name: Move files to publish directory
         run: |
           mkdir -p publish
-          mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./domains.txt ./publish/
+          mv ./accelerated-domains.china.txt ./apple.china.txt ./google.china.txt ./cn-direct.txt ./publish/
 
       - name: Git push assets to "release" branch
         run: |
